@@ -4,6 +4,7 @@ from pathlib import Path
 
 from omegaconf import OmegaConf
 
+
 @dataclass
 class File:
     enable: bool
@@ -12,15 +13,18 @@ class File:
     rotation: str
     retention: str
 
+
 @dataclass
 class Console:
     enable: bool
     level: str
 
+
 @dataclass
 class LoggingConfig:
     file: File
     console: Console
+
 
 # 数据库配置
 @dataclass
@@ -31,11 +35,13 @@ class DBConfig:
     password: str
     database: str
 
+
 @dataclass
 class QdrantConfig:
     host: str
     port: int
     embedding_size: int
+
 
 @dataclass
 class EmbeddingConfig:
@@ -43,17 +49,20 @@ class EmbeddingConfig:
     port: int
     model: str
 
+
 @dataclass
 class ESConfig:
     host: str
     port: int
     index_name: str
 
+
 @dataclass
 class LLMConfig:
     model_name: str
     api_key: str
     base_url: str
+
 
 @dataclass
 class AppConfig:
@@ -64,6 +73,7 @@ class AppConfig:
     embedding: EmbeddingConfig
     es: ESConfig
     llm: LLMConfig
+
 
 config_file = Path(__file__).parents[2] / 'conf' / 'app_config.yaml'
 context = OmegaConf.load(config_file)

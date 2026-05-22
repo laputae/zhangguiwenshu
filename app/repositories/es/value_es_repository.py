@@ -30,10 +30,9 @@ class ValueESRepository:
             batch_operations = []
             for value_info in batch_value_infos:
                 batch_operations.append({
-                    " index": {
+                    "index": {
                         "_index": self.index_name,
                     }
                 })
                 batch_operations.append(asdict(value_info))
             await self.client.bulk(operations=batch_operations)
-            

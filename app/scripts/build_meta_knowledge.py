@@ -6,11 +6,11 @@ from app.clients.embedding_client_manager import embedding_client_manager
 from app.clients.es_client_manager import es_client_manager
 from app.clients.mysql_client_manager import meta_mysql_client_manager, dw_mysql_client_manager
 from app.clients.qdrant_client_manager import qdrant_client_manager
-from app.repositories.es import value_es_repository
 from app.repositories.es.value_es_repository import ValueESRepository
 from app.repositories.mysql.dw.dw_mysql_repository import DWMySQLRepository
 from app.repositories.mysql.meta.meta_mysql_repository import MetaMySQLRepository
 from app.repositories.qdrant.column_qdrant_repository import ColumnQdrantRepository
+from app.repositories.qdrant.metric_qdrant_repository import MetricQdrantRepository
 from app.services.meta_knowledge_service import MetaKnowledgeService
 
 
@@ -26,11 +26,13 @@ async def build(config_path: Path):
         dw_mysql_repository = DWMySQLRepository(dw_session)
         column_qdrant_repository = ColumnQdrantRepository(qdrant_client_manager.client)
         value_es_repository = ValueESRepository(es_client_manager.client)
+        metric_qdrant_repository = MetricQdrantRepository(qdrant_client_manager.client)
         meta_knowledge_service = MetaKnowledgeService(meta_mysql_repository=meta_mysql_repository,
                                                       dw_mysql_repository=dw_mysql_repository,
                                                       column_qdrant_repository=column_qdrant_repository,
                                                       embedding_client=embedding_client_manager.client,
-                                                      value_es_repository=value_es_repository)
+                                                      value_es_repository=value_es_repository,
+                                                      metric_qdrant_repository=metric_qdrant_repository)
         await meta_knowledge_service.build(config_path)
 
     await meta_mysql_client_manager.close()

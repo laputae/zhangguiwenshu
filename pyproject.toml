@@ -10,6 +10,7 @@ dependencies = [
     "distance",
     "elasticsearch[async]>=8,<9",
     "fastapi[standard]>=0.136.1",
+    "grandalf>=0.8",
     "jieba>=0.42.1",
     "langchain>=1.2.18",
     "langchain-huggingface>=1.2.2",

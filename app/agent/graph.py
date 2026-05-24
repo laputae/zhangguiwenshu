@@ -2,12 +2,18 @@ from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
 from app.agent.context import DataAgentContext
-from app.agent.nodes import extract_keywords, recall_metric, recall_value, filter_table, generate_sql, correct_sql, \
-    validate_sql, run_sql
 from app.agent.nodes.add_extra_context import add_extra_context
+from app.agent.nodes.correct_sql import correct_sql
+from app.agent.nodes.extract_keywords import extract_keywords
 from app.agent.nodes.filter_metric import filter_metric
+from app.agent.nodes.filter_table import filter_table
+from app.agent.nodes.generate_sql import generate_sql
 from app.agent.nodes.merge_retrieved_info import merge_retrieved_info
 from app.agent.nodes.recall_column import recall_column
+from app.agent.nodes.recall_metric import recall_metric
+from app.agent.nodes.recall_value import recall_value
+from app.agent.nodes.run_sql import run_sql
+from app.agent.nodes.validate_sql import validate_sql
 from app.agent.state import DataAgentState
 
 graph_builder = StateGraph(state_schema=DataAgentState, context_schema=DataAgentContext)
@@ -43,4 +49,7 @@ graph_builder.add_conditional_edges(source="validate_sql",
                                     path_map={"run_sql": "run_sql", "correct_sql": "correct_sql"})
 
 graph_builder.add_edge("correct_sql", "run_sql")
-graph_builder.add_edge("run_sql",END)
+graph_builder.add_edge("run_sql", END)
+
+graph = graph_builder.compile()
+print(graph.get_graph().draw_mermaid())

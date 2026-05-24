@@ -1,3 +1,5 @@
+import asyncio
+
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
@@ -15,6 +17,8 @@ from app.agent.nodes.recall_value import recall_value
 from app.agent.nodes.run_sql import run_sql
 from app.agent.nodes.validate_sql import validate_sql
 from app.agent.state import DataAgentState
+from app.clients.qdrant_client_manager import qdrant_client_manager
+from app.repositories.qdrant.column_qdrant_repository import ColumnQdrantRepository
 
 graph_builder = StateGraph(state_schema=DataAgentState, context_schema=DataAgentContext)
 graph_builder.add_node("extract_keywords", extract_keywords)
@@ -52,4 +56,15 @@ graph_builder.add_edge("correct_sql", "run_sql")
 graph_builder.add_edge("run_sql", END)
 
 graph = graph_builder.compile()
-print(graph.get_graph().draw_mermaid())
+if __name__ == '__main__':
+    async def test():
+        qdrant_client_manager.init()
+        column_qdrant_repository = ColumnQdrantRepository(qdrant_client_manager.client)
+        state = DataAgentState(query="统计华北地区的销售总额")
+        context = DataAgentContext(column_qdrant_repository=column_qdrant_repository)
+        async for chunk in graph.astream(input=state, context=context, stream_mode='custom'):
+            print(chunk)
+        qdrant_client_manager.close()
+
+
+    asyncio.run(test())

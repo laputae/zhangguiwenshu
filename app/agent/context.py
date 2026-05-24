@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from app.repositories.qdrant.column_qdrant_repository import ColumnQdrantRepository
+
 
 class DataAgentContext(TypedDict):
-    pass
+    column_qdrant_repository: ColumnQdrantRepository

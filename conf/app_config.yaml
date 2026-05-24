@@ -41,6 +41,6 @@ es:
 
 
 llm:
-  model_name: gpt-5.2-codex
-  api_key: <api-key>
-  base_url: https://api.openai-proxy.org/v1
+  model_name: deepseek-v4-flash
+  api_key: ${oc.env:DEEPSEEK_API_KEY, ""}
+  base_url: https://api.deepseek.com

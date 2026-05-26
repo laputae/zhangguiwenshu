@@ -18,8 +18,13 @@ from app.agent.nodes.run_sql import run_sql
 from app.agent.nodes.validate_sql import validate_sql
 from app.agent.state import DataAgentState
 from app.clients.embedding_client_manager import embedding_client_manager
+from app.clients.es_client_manager import es_client_manager
 from app.clients.qdrant_client_manager import qdrant_client_manager
+from app.repositories.es import value_es_repository
+from app.repositories.es.value_es_repository import ValueESRepository
+from app.repositories.qdrant import metric_qdrant_repository
 from app.repositories.qdrant.column_qdrant_repository import ColumnQdrantRepository
+from app.repositories.qdrant.metric_qdrant_repository import MetricQdrantRepository
 
 graph_builder = StateGraph(state_schema=DataAgentState, context_schema=DataAgentContext)
 graph_builder.add_node("extract_keywords", extract_keywords)
@@ -61,14 +66,19 @@ if __name__ == '__main__':
     async def test():
         qdrant_client_manager.init()
         embedding_client_manager.init()
+        es_client_manager.init()
+        metric_qdrant_repository=MetricQdrantRepository(qdrant_client_manager.client)
+        value_es_repository=ValueESRepository(es_client_manager.client)
         column_qdrant_repository = ColumnQdrantRepository(qdrant_client_manager.client)
         state = DataAgentState(query="统计华北地区的销售总额")
         context = DataAgentContext(column_qdrant_repository=column_qdrant_repository,
-                                   embedding_client=embedding_client_manager.client)
+                                   embedding_client=embedding_client_manager.client,
+                                   metric_qdrant_repository=metric_qdrant_repository,
+                                   value_es_repository=value_es_repository)
         async for chunk in graph.astream(input=state, context=context, stream_mode='custom'):
             print(chunk)
 
         await qdrant_client_manager.close()
-
+        await es_client_manager.close()
 
     asyncio.run(test())

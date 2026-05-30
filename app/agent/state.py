@@ -4,6 +4,25 @@ from app.entities.column_info import ColumnInfo
 from app.entities.metric_info import MetricInfo
 from app.entities.value_info import ValueInfo
 
+class MetricInfoState(TypedDict):
+    name: str
+    description:str
+    relevant_columns:list[str]
+    alias:list[str]
+
+class ColumnInfoState(TypedDict):
+    name: str
+    type: str
+    role:str
+    examples:list
+    description:str
+    alias:list[str]
+
+class TableInfosState(TypedDict):
+    name:str
+    role:str
+    description:str
+    columns:list[ColumnInfoState]
 
 class DataAgentState(TypedDict):
     # 用户输入的查询
@@ -18,3 +37,5 @@ class DataAgentState(TypedDict):
     retrieved_metric_infos: list[MetricInfo]
     # 检索到的字段取值信息
     retrieved_value_infos: list[ValueInfo]
+    table_infos: list[TableInfosState]
+    metric_infos: list[MetricInfoState]

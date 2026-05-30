@@ -19,15 +19,15 @@ async def recall_column(state: DataAgentState, runtime: Runtime[DataAgentContext
     prompt = PromptTemplate(template=load_prompt("extend_keywords_for_column_recall"), input_variables=[])
     output_parser = JsonOutputParser()
     chain = prompt | llm | output_parser
-    result =await chain.ainvoke({"query": query})
+    result = await chain.ainvoke({"query": query})
     keywords = set(keywords + result)
-    column_info_map: dict[str,ColumnInfo] = {}
+    column_info_map: dict[str, ColumnInfo] = {}
     for keyword in keywords:
         embedding = await embedding_client.aembed_query(keyword)
         current_column_infos: list[ColumnInfo] = await column_qdrant_repository.search(embedding)
         for column_info in current_column_infos:
             if column_info.id not in column_info_map:
                 column_info_map[column_info.id] = column_info
-    retrieved_column_infos:list[ColumnInfo]=list(column_info_map.values())
+    retrieved_column_infos: list[ColumnInfo] = list(column_info_map.values())
     logger.info(f"检索到字段信息，打印id: {list(column_info_map.keys())}")
     return {"retrieved_column_infos": retrieved_column_infos}

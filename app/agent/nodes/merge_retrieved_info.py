@@ -1,8 +1,8 @@
-import asyncio
-
 from langgraph.runtime import Runtime
+
 from app.agent.context import DataAgentContext
 from app.agent.state import DataAgentState, TableInfoState, ColumnInfoState, MetricInfoState
+from app.core.log import logger
 from app.entities.column_info import ColumnInfo
 from app.entities.metric_info import MetricInfo
 from app.entities.table_info import TableInfo
@@ -67,7 +67,8 @@ async def merge_retrieved_info(state: DataAgentState, runtime: Runtime[DataAgent
         relevant_columns=retrieved_metric_info.relevant_columns,
         alias=retrieved_metric_info.alias
     ) for retrieved_metric_info in retrieved_metric_infos]
-
+    logger.info(table_infos)
+    logger.info(metric_infos)
     return {
         "table_infos": table_infos,
         "metric_infos": metric_infos

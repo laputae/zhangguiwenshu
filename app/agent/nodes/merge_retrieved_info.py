@@ -74,8 +74,8 @@ async def merge_retrieved_info(state: DataAgentState, runtime: Runtime[DataAgent
         relevant_columns=retrieved_metric_info.relevant_columns,
         alias=retrieved_metric_info.alias
     ) for retrieved_metric_info in retrieved_metric_infos]
-    logger.info(table_infos)
-    logger.info(metric_infos)
+    logger.info(f"合并之后的表信息: {table_infos}")
+    logger.info(f"合并之后的指标信息: {metric_infos}")
     return {
         "table_infos": table_infos,
         "metric_infos": metric_infos

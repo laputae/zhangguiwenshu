@@ -16,7 +16,7 @@ async def recall_column(state: DataAgentState, runtime: Runtime[DataAgentContext
     query = state["query"]
     column_qdrant_repository = runtime.context["column_qdrant_repository"]
     embedding_client = runtime.context["embedding_client"]
-    prompt = PromptTemplate(template=load_prompt("extend_keywords_for_column_recall"), input_variables=[])
+    prompt = PromptTemplate(template=load_prompt("extend_keywords_for_column_recall"), input_variables=["query"])
     output_parser = JsonOutputParser()
     chain = prompt | llm | output_parser
     result = await chain.ainvoke({"query": query})

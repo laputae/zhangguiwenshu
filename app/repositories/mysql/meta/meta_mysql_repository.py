@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy import text
 from app.entities.column_info import ColumnInfo
 from app.entities.column_metric import ColumnMetric
 from app.entities.metric_info import MetricInfo
@@ -35,9 +35,14 @@ class MetaMySQLRepository:
         else:
             return None
 
-    async def get_table_info_by_id(self, id:str)-> TableInfo | None:
+    async def get_table_info_by_id(self, id: str) -> TableInfo | None:
         table_info: TableInfoMySQL | None = await self.session.get(TableInfoMySQL, id)
         if table_info:
             return TableInfoMapper.to_entity(table_info)
         else:
             return None
+
+    async def get_key_columns_by_table_id(self, table_id: str) -> list[ColumnInfo] | None:
+        sql = "select * from column_info where table_id=:table_id and role in ('primary_key','foreign_key')"
+        result = await self.session.execute(text(sql), {"table_id": table_id})
+        return [ColumnInfo(**dict(row)) for row in result.mappings().fetchall()]

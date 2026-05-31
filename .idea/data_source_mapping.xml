@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/app/repositories/mysql/meta/meta_mysql_repository.py" value="9cca3832-de72-430d-810c-af98af5e33bd" />
+  </component>
+</project>

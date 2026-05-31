@@ -34,14 +34,21 @@ async def merge_retrieved_info(state: DataAgentState, runtime: Runtime[DataAgent
             retrieved_column_infos_map[column_id] = column_info
         if value not in retrieved_column_infos_map[column_id].examples:
             retrieved_column_infos_map[column_id].examples.append(value)
-    # 按照表对字段信息分组，整理成目标格式
+    # 按照表对字段信息分组
     table_to_columns_map: dict[str, list[ColumnInfo]] = {}
     for column_info in retrieved_column_infos_map.values():
         table_id = column_info.table_id
         if table_id not in table_to_columns_map:
             table_to_columns_map[table_id] = []
         table_to_columns_map[table_id].append(column_info)
-    # 将table_id->columns映射 转换为 list[TableInfoState]
+    # 强制为每个表添加主键和外键字段
+    for table_id in table_to_columns_map.keys():
+        key_columns: list[ColumnInfo] = await meta_mysql_repository.get_key_columns_by_table_id(table_id)
+        column_ids = [column_info.id for column_info in table_to_columns_map[table_id]]
+        for key_column in key_columns:
+            if key_column.id not in column_ids:
+                table_to_columns_map[table_id].append(key_column)
+    # 将表信息整理成目标格式
     table_infos: list[TableInfoState] = []
     for table_id, column_infos in table_to_columns_map.items():
         table_info: TableInfo = await meta_mysql_repository.get_table_info_by_id(table_id)

@@ -18,7 +18,7 @@ class ColumnInfoState(TypedDict):
     description:str
     alias:list[str]
 
-class TableInfosState(TypedDict):
+class TableInfoState(TypedDict):
     name:str
     role:str
     description:str
@@ -37,5 +37,5 @@ class DataAgentState(TypedDict):
     retrieved_metric_infos: list[MetricInfo]
     # 检索到的字段取值信息
     retrieved_value_infos: list[ValueInfo]
-    table_infos: list[TableInfosState]
+    table_infos: list[TableInfoState]
     metric_infos: list[MetricInfoState]

@@ -46,7 +46,7 @@ class MetaKnowledgeService:
             column_types = await self.dw_mysql_repository.get_column_types(table.name)
             for column in table.columns:
                 column_values = await self.dw_mysql_repository.get_column_values(table.name, column.name)
-                column_info = ColumnInfo(id=f"{table.name}+{column.name}",
+                column_info = ColumnInfo(id=f"{table.name}.{column.name}",
                                          name=column.name,
                                          type=column_types[column.name],
                                          role=column.role,

@@ -1,11 +1,25 @@
-import asyncio
+from datetime import date
 
 from langgraph.runtime import Runtime
+
 from app.agent.context import DataAgentContext
-from app.agent.state import DataAgentState
+from app.agent.state import DataAgentState, DateInfoState, DBInfoState
+from app.core.log import logger
 
 
-async def add_extra_context(state:DataAgentState,runtime:Runtime[DataAgentContext]):
-    writer=runtime.stream_writer
+async def add_extra_context(state: DataAgentState, runtime: Runtime[DataAgentContext]):
+    writer = runtime.stream_writer
     writer("添加额外上下文")
-    await asyncio.sleep(0.5)
+
+    dw_mysql_repository = runtime.context["dw_mysql_repository"]
+    today = date.today()
+    date_str = today.strftime("%Y-%m-%d")
+    weekday = today.strftime("%A")
+    quarter = f"Q{(today.month - 1) // 3 + 1}"
+    date_info = DateInfoState(date=date_str, weekday=weekday, quarter=quarter)
+
+    db = await dw_mysql_repository.get_db_info()
+    db_info = DBInfoState(**db)
+    logger.info(f"日期信息是: {date_info}")
+    logger.info(f"数据库信息是: {db_info}")
+    return {"date_info": date_info, "db_info": db_info}

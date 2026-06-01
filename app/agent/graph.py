@@ -75,7 +75,7 @@ if __name__ == '__main__':
         meta_mysql_client_manager.init()
         dw_mysql_client_manager.init()
         async with (meta_mysql_client_manager.session_factory() as meta_session,
-                    dw_mysql_client_manager.session_factory as dw_session):
+                    dw_mysql_client_manager.session_factory() as dw_session):
             meta_mysql_repository = MetaMySQLRepository(meta_session)
             dw_mysql_repository = DWMySQLRepository(dw_session)
             metric_qdrant_repository = MetricQdrantRepository(qdrant_client_manager.client)

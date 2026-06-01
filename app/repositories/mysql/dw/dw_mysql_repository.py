@@ -1,5 +1,5 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class DWMySQLRepository:
@@ -23,3 +23,7 @@ class DWMySQLRepository:
         version = result.scalar()
         dialect = self.session.bind.dialect.name
         return {"dialect": dialect, "version": version}
+
+    async def run(self, sql: str) -> list[dict]:
+        result = await self.session.execute(text(sql))
+        return [dict(row) for row in result.mappings().fetchall()]

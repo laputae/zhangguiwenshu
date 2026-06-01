@@ -52,9 +52,13 @@ class DataAgentState(TypedDict):
     retrieved_metric_infos: list[MetricInfo]
     # 检索到的字段取值信息
     retrieved_value_infos: list[ValueInfo]
-
+    # 过滤之前和过滤之后的表信息
     table_infos: list[TableInfoState]
+    # 过滤之前和过滤之后的指标信息
     metric_infos: list[MetricInfoState]
-
+    # 日期信息
     date_info: DateInfoState
+    # 数据库信息
     db_info: DBInfoState
+    # 生成的SQL
+    sql: str

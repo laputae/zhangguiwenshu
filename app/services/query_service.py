@@ -33,4 +33,4 @@ class QueryService:
                                    meta_mysql_repository=self.meta_mysql_repository,
                                    dw_mysql_repository=self.dw_mysql_repository)
         async for chunk in graph.astream(input=state, context=context, stream_mode='custom'):
-            yield chunk
+            yield f"data: {chunk}\n\n"

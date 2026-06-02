@@ -4,6 +4,7 @@ from app.agent.context import DataAgentContext
 from app.agent.graph import graph
 from app.agent.state import DataAgentState
 from app.repositories.es.value_es_repository import ValueESRepository
+from app.repositories.mysql.dw.dw_mysql_repository import DWMySQLRepository
 from app.repositories.mysql.meta.meta_mysql_repository import MetaMySQLRepository
 
 

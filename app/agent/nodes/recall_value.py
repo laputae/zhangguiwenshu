@@ -1,17 +1,19 @@
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 from langgraph.runtime import Runtime
+
 from app.agent.context import DataAgentContext
-from app.agent.state import DataAgentState
 from app.agent.llm import llm
-from app.entities.value_info import ValueInfo
+from app.agent.state import DataAgentState
 from app.core.log import logger
+from app.entities.value_info import ValueInfo
 from app.prompt.prompt_loader import load_prompt
 
 
 async def recall_value(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer({"type": "progress", "step": "召回字段取值", "status": "running"})
+    step = "召回字段取值"
+    writer({"type": "progress", "step": step, "status": "running"})
 
     try:
         query = state["query"]
@@ -32,9 +34,9 @@ async def recall_value(state: DataAgentState, runtime: Runtime[DataAgentContext]
                     value_infos_map[current_value_info.id] = current_value_info
         retrieved_value_infos: list[ValueInfo] = list(value_infos_map.values())
         logger.info(f"检索到字段取值，打印key: {list(value_infos_map.keys())}")
-        writer({"type": "progress", "step": "召回字段取值", "status": "success"})
+        writer({"type": "progress", "step": step, "status": "success"})
         return {"retrieved_value_infos": retrieved_value_infos}
     except Exception as e:
         logger.error(f"召回字段取值失败: {e}")
-        writer({"type": "progress", "step": "召回字段取值", "status": "error"})
+        writer({"type": "progress", "step": step, "status": "error"})
         raise

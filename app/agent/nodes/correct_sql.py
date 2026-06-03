@@ -12,7 +12,8 @@ from app.prompt.prompt_loader import load_prompt
 
 async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer({"type": "progress", "step": "修正SQL", "status": "running"})
+    step = "修正SQL"
+    writer({"type": "progress", "step": step, "status": "running"})
 
     try:
         table_infos = state["table_infos"]
@@ -36,9 +37,9 @@ async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext])
                                       "sql": sql,
                                       "error": error})
         logger.info(f"修正后的SQL是: {result}")
-        writer({"type": "progress", "step": "修正SQL", "status": "success"})
+        writer({"type": "progress", "step": step, "status": "success"})
         return {"sql": result}
     except Exception as e:
         logger.error(f"修正SQL失败: {e}")
-        writer({"type": "progress", "step": "修正SQL", "status": "error"})
+        writer({"type": "progress", "step": step, "status": "error"})
         raise

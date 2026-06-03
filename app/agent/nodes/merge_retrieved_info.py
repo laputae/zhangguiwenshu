@@ -11,7 +11,8 @@ from app.entities.value_info import ValueInfo
 
 async def merge_retrieved_info(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer({"type": "progress", "step": "合并召回信息", "status": "running"})
+    step = "合并召回信息"
+    writer({"type": "progress", "step": step, "status": "running"})
 
     try:
         retrieved_column_infos: list[ColumnInfo] = state["retrieved_column_infos"]
@@ -71,12 +72,12 @@ async def merge_retrieved_info(state: DataAgentState, runtime: Runtime[DataAgent
         ) for retrieved_metric_info in retrieved_metric_infos]
         logger.info(f"合并之后的表信息: {table_infos}")
         logger.info(f"合并之后的指标信息: {metric_infos}")
-        writer({"type": "progress", "step": "合并召回信息", "status": "success"})
+        writer({"type": "progress", "step": step, "status": "success"})
         return {
             "table_infos": table_infos,
             "metric_infos": metric_infos
         }
     except Exception as e:
         logger.error(f"合并召回信息失败: {e}")
-        writer({"type": "progress", "step": "合并召回信息", "status": "error"})
+        writer({"type": "progress", "step": step, "status": "error"})
         raise

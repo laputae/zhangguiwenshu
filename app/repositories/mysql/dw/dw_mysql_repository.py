@@ -27,3 +27,7 @@ class DWMySQLRepository:
     async def run(self, sql: str) -> list[dict]:
         result = await self.session.execute(text(sql))
         return [dict(row) for row in result.mappings().fetchall()]
+
+    async def validate(self, sql: str):
+        sql = f"explain {sql}"
+        await self.session.execute(text(sql))

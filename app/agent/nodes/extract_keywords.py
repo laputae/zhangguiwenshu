@@ -8,7 +8,8 @@ from app.core.log import logger
 
 async def extract_keywords(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer({"type": "progress", "step": "抽取关键词", "status": "running"})
+    step = "抽取关键词"
+    writer({"type": "progress", "step": step, "status": "running"})
 
     try:
         query = state["query"]
@@ -29,10 +30,10 @@ async def extract_keywords(state: DataAgentState, runtime: Runtime[DataAgentCont
         )
         keywords = jieba.analyse.extract_tags(query, allowPOS=allow_pos)
         keywords = list(set(keywords + [query]))
-        writer({"type": "progress", "step": "抽取关键词", "status": "success"})
-        logger.error(f"抽取关键词成功: {keywords}")
+        writer({"type": "progress", "step": step, "status": "success"})
+        logger.info(f"抽取关键词成功: {keywords}")
         return {"keywords": keywords}
     except Exception as e:
         logger.error(f"抽取关键词失败: {e}")
-        writer({"type": "progress", "step": "抽取关键词", "status": "error"})
+        writer({"type": "progress", "step": step, "status": "error"})
         raise

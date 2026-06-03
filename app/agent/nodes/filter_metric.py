@@ -2,16 +2,18 @@ import yaml
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 from langgraph.runtime import Runtime
-from app.core.log import logger
+
 from app.agent.context import DataAgentContext
 from app.agent.llm import llm
 from app.agent.state import DataAgentState, MetricInfoState
+from app.core.log import logger
 from app.prompt.prompt_loader import load_prompt
 
 
 async def filter_metric(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer({"type": "progress", "step": "过滤指标信息", "status": "running"})
+    step = "过滤指标信息"
+    writer({"type": "progress", "step": step, "status": "running"})
 
     try:
         query = state["query"]
@@ -23,9 +25,9 @@ async def filter_metric(state: DataAgentState, runtime: Runtime[DataAgentContext
                                       "metric_infos": yaml.dump(metric_infos, allow_unicode=True, sort_keys=False)})
         metric_infos = [metric_info for metric_info in metric_infos if metric_info["name"] in result]
         logger.info(f"过滤后的指标信息是: {metric_infos}")
-        writer({"type": "progress", "step": "过滤指标信息", "status": "success"})
+        writer({"type": "progress", "step": step, "status": "success"})
         return {"metric_infos": metric_infos}
     except Exception as e:
         logger.error(f"过滤指标信息失败: {e}")
-        writer({"type": "progress", "step": "过滤指标信息", "status": "error"})
+        writer({"type": "progress", "step": step, "status": "error"})
         raise

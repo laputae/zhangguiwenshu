@@ -30,7 +30,7 @@ async def extract_keywords(state: DataAgentState, runtime: Runtime[DataAgentCont
         keywords = jieba.analyse.extract_tags(query, allowPOS=allow_pos)
         keywords = list(set(keywords + [query]))
         writer({"type": "progress", "step": "抽取关键词", "status": "success"})
-        logger.error(f"抽取关键词成功: {keywords}")
+        logger.info(f"抽取关键词成功: {keywords}")
         return {"keywords": keywords}
     except Exception as e:
         logger.error(f"抽取关键词失败: {e}")

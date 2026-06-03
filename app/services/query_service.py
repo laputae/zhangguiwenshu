@@ -32,8 +32,5 @@ class QueryService:
                                    value_es_repository=self.value_es_repository,
                                    meta_mysql_repository=self.meta_mysql_repository,
                                    dw_mysql_repository=self.dw_mysql_repository)
-        try:
-            async for chunk in graph.astream(input=state, context=context, stream_mode='custom'):
-                yield f"data: {chunk}\n\n"
-        except Exception as e:
-            yield {"type": "error", "message": str(e)}
+        async for chunk in graph.astream(input=state, context=context, stream_mode='custom'):
+            yield chunk

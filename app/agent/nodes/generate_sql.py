@@ -12,22 +12,28 @@ from app.prompt.prompt_loader import load_prompt
 
 async def generate_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer("生成SQL")
+    writer({"type": "progress", "step": "生成SQL", "status": "running"})
 
-    table_infos = state["table_infos"]
-    metric_infos = state["metric_infos"]
-    data_info = state["date_info"]
-    db_info = state["db_info"]
-    query = state["query"]
+    try:
+        table_infos = state["table_infos"]
+        metric_infos = state["metric_infos"]
+        data_info = state["date_info"]
+        db_info = state["db_info"]
+        query = state["query"]
 
-    prompt = PromptTemplate(template=load_prompt("generate_sql"),
-                            input_variables=["table_infos", "metric_infos", "date_info", "db_info", "query"])
-    output_parser = StrOutputParser()
-    chain = prompt | llm | output_parser
-    result = await chain.ainvoke({"table_infos": yaml.dump(table_infos, allow_unicode=True, sort_keys=False),
-                                  "metric_infos": yaml.dump(metric_infos, allow_unicode=True, sort_keys=False),
-                                  "date_info": yaml.dump(data_info, allow_unicode=True, sort_keys=False),
-                                  "db_info": yaml.dump(db_info, allow_unicode=True, sort_keys=False),
-                                  "query": query})
-    logger.info(f"生成的SQL: {result}")
-    return {"sql": result}
+        prompt = PromptTemplate(template=load_prompt("generate_sql"),
+                                input_variables=["table_infos", "metric_infos", "date_info", "db_info", "query"])
+        output_parser = StrOutputParser()
+        chain = prompt | llm | output_parser
+        result = await chain.ainvoke({"table_infos": yaml.dump(table_infos, allow_unicode=True, sort_keys=False),
+                                      "metric_infos": yaml.dump(metric_infos, allow_unicode=True, sort_keys=False),
+                                      "date_info": yaml.dump(data_info, allow_unicode=True, sort_keys=False),
+                                      "db_info": yaml.dump(db_info, allow_unicode=True, sort_keys=False),
+                                      "query": query})
+        logger.info(f"生成的SQL: {result}")
+        writer({"type": "progress", "step": "生成SQL", "status": "success"})
+        return {"sql": result}
+    except Exception as e:
+        logger.error(f"生成SQL失败: {e}")
+        writer({"type": "progress", "step": "生成SQL", "status": "error"})
+        raise

@@ -34,6 +34,7 @@ class QueryService:
                                    dw_mysql_repository=self.dw_mysql_repository)
         try:
             async for chunk in graph.astream(input=state, context=context, stream_mode='custom'):
-                yield f"data: {chunk}\n\n"
+                yield f"data: {json.dumps(chunk, ensure_ascii=False, default=str)}\n\n"
         except Exception as e:
-            yield {"type": "error", "message": str(e)}
+            error = {"type": "error", "message": str(e)}
+            yield f"data: {json.dumps(error, ensure_ascii=False, default=str)}\n\n"

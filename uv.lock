@@ -2500,6 +2500,12 @@ wheels = [
 ]
 
 [[package]]
+name = "uuid"
+version = "1.30"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ce/63/f42f5aa951ebf2c8dac81f77a8edcc1c218640a2a35a03b9ff2d4aa64c3d/uuid-1.30.tar.gz", hash = "sha256:1f87cc004ac5120466f36c5beae48b4c48cc411968eed0eaecd3da82aa96193f", size = 5811, upload-time = "2007-05-26T11:13:24Z" }
+
+[[package]]
 name = "uuid-utils"
 version = "0.14.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2945,6 +2951,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "qdrant-client" },
     { name = "sqlalchemy" },
+    { name = "uuid" },
 ]
 
 [package.metadata]
@@ -2971,6 +2978,7 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "qdrant-client", specifier = ">=1.17.1" },
     { name = "sqlalchemy", specifier = ">=2.0.49" },
+    { name = "uuid" },
 ]
 
 [[package]]
